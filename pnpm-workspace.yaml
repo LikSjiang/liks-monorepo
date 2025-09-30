@@ -1,0 +1,6 @@
+# 告诉pnpm子包在哪个位置
+packages:
+  # packages文件夹下的所有子文件夹都是属于子包
+  - 'packages/*' 
+  # apps文件夹下的所有子文件夹都是属于子包
+  - 'apps/*'
