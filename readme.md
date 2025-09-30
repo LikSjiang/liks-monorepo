@@ -397,7 +397,7 @@ globals: { ...globals.node }, // Node.js 全局变量
     ```
 
 ##### (3) 配置 cspell 脚本命令：
-    
+
     编辑 package.json 文件，检查apps和packages目录下的文件
     ```
     "scripts": {
@@ -413,37 +413,131 @@ globals: { ...globals.node }, // Node.js 全局变量
     pnpm add -Dw  @commitlint/cli @commitlint/config-conventional commitizen cz-git
     ```
 
-| 插件名称             | 插件功能                                         |
-| ----------------  | ------------------------------------------------ |
-| @commitlint/cli        | 是commitizen工具的核心           |
-| @commitlint/config-conventional | 是基于 conventional commits 规范的配置文件  |
-| commitizen | 提供了一个交互式的命令行工具，用于生成符合规范的提交信息  |
-| cz-git | 是国人开发的工具，工程性更强，自定义度高，交互性更好。用于git提交检查  |
+| 插件名称                        | 插件功能                                                              |
+| ------------------------------- | --------------------------------------------------------------------- |
+| @commitlint/cli                 | 是commitizen工具的核心                                                |
+| @commitlint/config-conventional | 是基于 conventional commits 规范的配置文件                            |
+| commitizen                      | 提供了一个交互式的命令行工具，用于生成符合规范的提交信息              |
+| cz-git                          | 是国人开发的工具，工程性更强，自定义度高，交互性更好。用于git提交检查 |
 
 ##### （2）在根目录package.json文件配置提交命令
 
     ```
     "scripts": {
-      "commit": "cz-git"
+      "commit": "git-cz"
     }
     ```
+
 添加config配置：
-    ```
-    "config": {
+`     "config": {
       "commitizen": {
         "path": "node_modules/cz-git"
       }
     }
-    ```
+    `
 
 ##### （3） 配置cz-git插件，创建commitlint.config.js文件
 
     ```
     touch commitlint.config.js
     ```
+
 添加配置：
+
     ```
-    module.exports = {
-      extends: ["@commitlint/config-conventional"],
+    export default {
+    extends: ['@commitlint/config-conventional'],
+    // @see https://commitlint.js.org/#/reference-rules
+    rules: {
+        'type-enum': [
+        2,
+        'always',
+        [
+            'feat', // 新功能
+            'fix', // 修复
+            'docs', // 文档变更
+            'style', // 代码格式(不影响代码运行的变动)
+            'refactor', // 重构(既不是增加feature，也不是修复bug)
+            'perf', // 性能优化
+            'test', // 增加测试
+            'chore', // 构建过程或辅助工具的变动
+            'revert', // 回退
+            'build', // 打包
+            'ci', // CI related changes
+        ],
+        ],
+        'body-leading-blank': [2, 'always'],
+        'footer-leading-blank': [1, 'always'],
+        'header-max-length': [2, 'always', 108],
+        'subject-empty': [2, 'never'],
+        'type-empty': [2, 'never'],
+        'subject-case': [0], // subject 大小写不做校验
+    },
+    prompt: {
+        types: [
+        { value: 'feat', name: '✨feat:     新功能' },
+        { value: 'fix', name: '🐛fix:      修复' },
+        { value: 'docs', name: '✏️docs:     文档变更' },
+        { value: 'style', name: '💄style:    代码格式(不影响代码运行的变动)' },
+        {
+            value: 'refactor',
+            name: '♻️refactor: 重构(既不是增加feature，也不是修复bug)',
+        },
+        { value: 'perf', name: '⚡️perf:     性能优化' },
+        { value: 'test', name: '✅test:     增加测试' },
+        { value: 'chore', name: '🚀chore:    构建过程或辅助工具的变动' },
+        { value: 'revert', name: '⏪️revert:   回退' },
+        { value: 'build', name: '📦️build:    打包' },
+        { value: 'ci', name: '👷CI:   related changes' },
+        ],
+        messages: {
+        type: '请选择提交类型:',
+        scope: '请输入修改范围(可选):',
+        customScope: '请输入自定义修改范围:',
+        subject: '请输入简短的变更描述:',
+        body: '请输入详细的变更描述(可选):',
+        footer: '请输入变更影响的关闭问题(可选):',
+        confirmCommit: '确认提交变更吗?',
+        },
+        scopes: ['root', 'apps', 'packages'],
+        allCustomScopes: true,
+        skipQuestions: ['body', 'footer', 'breaking', 'footerPrefix'],
+    },
+
+};
+
+````
+
+##### (4) 安装 husky 插件：用于连接git hooks钩子函数，在提交代码前、后都可以做一些事情。
+
+    ```
+    pnpm add -Dw husky
+    ```
+    初始化husky
+    ```
+    pnpx husky init
+    ```
+    配置
+    ```
+    #!/usr/bin/env sh
+    pnpm lint:prettier && pnpm lint:eslint && pnpm lint:cspellcheck
+    ```
+
+##### (5) 安装 lint-staged 插件：只对暂存区的文件进行检查，不会对所有文件进行检查。
+
+    ```
+    pnpm add -Dw lint-staged
+    ```
+    配置命令
+    ```
+    "precommit": "lint-staged"
+    ```
+    配置文件
+    ```
+    // .lintstagedrc.js
+    export default {
+        '*.{js,jsx,ts,tsx,vue,html,css,less,scss,md}': ['cspell lint'],
+        '*.{js,jsx,ts,tsx,vue,md}': ['prettier --write', 'eslint']
     };
     ```
+````
