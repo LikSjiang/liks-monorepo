@@ -506,7 +506,7 @@ globals: { ...globals.node }, // Node.js 全局变量
 
 };
 
-````
+`````
 
 ##### (4) 安装 husky 插件：用于连接git hooks钩子函数，在提交代码前、后都可以做一些事情。
 
@@ -540,4 +540,15 @@ globals: { ...globals.node }, // Node.js 全局变量
         '*.{js,jsx,ts,tsx,vue,md}': ['prettier --write', 'eslint']
     };
     ```
-````
+    ````
+
+#### 17. packages 子包打包配置
+##### （1） 安装 esbuild 插件：用于打包子包。
+```
+pnpm add -Dw esbuild
+```
+##### （2） 编写子包打包脚本
+```
+// scripts/dev.js
+```
+`````

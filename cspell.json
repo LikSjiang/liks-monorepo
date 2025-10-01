@@ -32,6 +32,7 @@
     ".prettierignore",
     "cspell.json",
     "commitlint.config.js",
+    "pnpm-lock.yaml",
     ".cspell"
   ]
 }
