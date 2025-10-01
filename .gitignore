@@ -15,7 +15,7 @@ dist
 .idea/
 *.suo
 *.ntvs*
-
+dist
 
 # OS
 .DS_Store
