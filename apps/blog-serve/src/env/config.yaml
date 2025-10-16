@@ -1,3 +1,4 @@
+## 应用配置
 app:
   name: 'blog-serve'
   version: '1.0.0'
@@ -8,14 +9,14 @@ app:
     host: 'localhost'
     port: 3090
     timeout: 5000
-  
 
+## 数据库配置
 db:
   postgres:
     host: 'localhost'
     url: 'localhost'
     port: 5432
-    database: 'yaml-db'
+    database: 'liks_blog'
     username: 'root'
     password: '375999**@Li'
     synchronize: true
@@ -27,3 +28,17 @@ db:
     username: 'root'
     password: '375999**@Li'
     synchronize: true
+
+## swagger 配置
+swagger:
+  enabled: true
+  title: 'Blog API'
+  description: 'Blog API 文档'
+  version: '1.0.0'
+  path: '/api/swagger/docs'
+  jsonDocumentUrl: '/api/swagger/json'
+  tag: 'blog'
+
+## multer 配置
+multer:
+  dest: '../uploads'

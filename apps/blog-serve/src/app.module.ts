@@ -11,6 +11,7 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MulterModule } from '@nestjs/platform-express';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,6 +31,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         autoLoadEntities: true,
         synchronize: configService.get('db.mysql.synchronize', false),
       }),
+    }),
+    MulterModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        dest: configService.get<string>('multer.dest', '../uploads'),
+      }),
+      inject: [ConfigService],
     }),
   ],
   controllers: [AppController],

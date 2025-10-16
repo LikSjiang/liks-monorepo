@@ -18,6 +18,15 @@ export type PostgresConfig = {
   password: string;
   database: string;
 };
+export type MysqlConfig = {
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+  database: string;
+  synchronize: boolean;
+};
+
 export type ApiConfig = {
   prefix: string;
   version: string;
@@ -29,9 +38,22 @@ export type AppConfig = {
   api: ApiConfig;
 };
 
+// swagger 配置
+export type SwaggerConfig = {
+  enabled: boolean;
+  title: string;
+  tag: string;
+  description: string;
+  version: string;
+  path: string;
+  jsonDocumentUrl: string;
+};
+
 export type Config = {
   app: AppConfig;
   db: {
     postgres: PostgresConfig;
+    mysql: MysqlConfig;
   };
+  swagger: SwaggerConfig;
 };
