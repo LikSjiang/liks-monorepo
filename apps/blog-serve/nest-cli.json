@@ -3,6 +3,20 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "assets": [
+      {
+        "include": "**/*.env",
+        "outDir": "dist"
+      },
+      {
+        "include": "**/*.yaml",
+        "outDir": "dist"
+      }
+    ],
+    "deleteOutDir": true,
+    "watchAssets": true
+  },
+  "generateOptions": {
+    "spec": false
   }
 }

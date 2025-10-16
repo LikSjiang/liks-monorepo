@@ -10,6 +10,7 @@ export default {
       2,
       'always',
       [
+        'add', // 新增
         'feat', // 新功能
         'fix', // 修复
         'docs', // 文档变更
@@ -32,6 +33,7 @@ export default {
   },
   prompt: {
     types: [
+      { value: 'add', name: '➕add:      新增' },
       { value: 'feat', name: '✨feat:     新功能' },
       { value: 'fix', name: '🐛fix:      修复' },
       { value: 'docs', name: '✏️docs:     文档变更' },

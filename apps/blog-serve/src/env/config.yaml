@@ -1,0 +1,17 @@
+app:
+  name: 'blog-serve'
+  version: '1.0.0'
+  api:
+    prefix: '/api'
+    version: 'v1'
+  http:
+    host: 'localhost'
+    port: 3090
+    timeout: 5000
+  
+
+db:
+  postgres:
+    url: 'localhost'
+    port: 5432
+    database: 'yaml-db'
