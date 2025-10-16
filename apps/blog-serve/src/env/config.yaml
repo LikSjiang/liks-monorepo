@@ -12,6 +12,18 @@ app:
 
 db:
   postgres:
+    host: 'localhost'
     url: 'localhost'
     port: 5432
     database: 'yaml-db'
+    username: 'root'
+    password: '375999**@Li'
+    synchronize: true
+  mysql:
+    host: 'localhost'
+    url: 'localhost'
+    port: 3306
+    database: 'liks_blog'
+    username: 'root'
+    password: '375999**@Li'
+    synchronize: true
