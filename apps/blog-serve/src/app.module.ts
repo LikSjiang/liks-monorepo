@@ -12,6 +12,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MulterModule } from '@nestjs/platform-express';
+import { UserModule } from './modules/user/user.module';
+import type { MysqlConfig } from './config/config.types';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,16 +24,19 @@ import { MulterModule } from '@nestjs/platform-express';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
-        host: configService.get('db.mysql.host', 'localhost'),
-        port: configService.get('db.mysql.port', 3306),
-        username: configService.get('db.mysql.username'),
-        password: configService.get('db.mysql.password'),
-        database: configService.get('db.mysql.database'),
-        autoLoadEntities: true,
-        synchronize: configService.get('db.mysql.synchronize', false),
-      }),
+      useFactory: (configService: ConfigService) => {
+        const { host = 'localhost', port = 3306, username, password, database, synchronize = false } = configService.get<MysqlConfig>('db.mysql', {} as MysqlConfig);
+        return {
+          type: 'mysql',
+          host,
+          port,
+          username,
+          password,
+          database,
+          autoLoadEntities: true,
+          synchronize,
+        };
+      },
     }),
     MulterModule.registerAsync({
       imports: [ConfigModule],
@@ -39,6 +45,7 @@ import { MulterModule } from '@nestjs/platform-express';
       }),
       inject: [ConfigService],
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

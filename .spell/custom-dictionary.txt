@@ -2,3 +2,7 @@ liks
 cspellcheck
 commitlint
 nodenext
+zhangsan
+tinyint
+metatype
+lisi

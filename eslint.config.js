@@ -28,12 +28,20 @@ export default defineConfig([
     rules: {
       // 开启 eslint-plugin-prettier 插件的规则
       'no-var': 'error', // 禁止使用var
+      '@typescript-eslint/no-explicit-any': ['off'],
+      '@typescript-eslint/no-floating-promises': ['off'],
+      '@typescript-eslint/no-unsafe-argument': ['off'],
+      '@typescript-eslint/no-unsafe-return': ['off'],
+      '@typescript-eslint/no-unsafe-assignment': ['off'],
+      '@typescript-eslint/no-unsafe-member-access': ['off'],
+      '@typescript-eslint/no-unsafe-function-type': ['off'],
+      'prettier/prettier': ['off', { endOfLine: 'auto' }],
     },
   },
   //   前端配置
   {
     ignores,
-    files: ['apps/frontend/**/*.{js,jsx,ts,tsx,vue}', 'packages/components/**/*.{js,jsx,ts,tsx,vue}'],
+    files: ['apps/*/**/*.{js,jsx,ts,tsx,vue}', 'packages/components/**/*.{js,jsx,ts,tsx,vue}'],
     extends: [...eslintPluginVue.configs['flat/recommended'], eslintConfigPrettier],
     languageOptions: {
       globals: { ...globals.browser }, // 浏览器全局变量
@@ -42,7 +50,7 @@ export default defineConfig([
   //   后端配置
   {
     ignores,
-    files: ['apps/backend/**/*.{js,jsx,ts,tsx}'],
+    files: ['apps/*/**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
       globals: { ...globals.node }, // Node.js 全局变量
     },

@@ -8,14 +8,12 @@
 import { readFileSync } from 'fs';
 import * as yaml from 'js-yaml';
 import { join } from 'path';
-import type { Config } from '../env/config.types';
+import type { Config } from './config.types';
 
-const YAML_CONFIG_FILENAME = '../env/config.yaml';
+const YAML_CONFIG_FILENAME = './config.yaml';
 
 export default () => {
-  const config = yaml.load(
-    readFileSync(join(__dirname, YAML_CONFIG_FILENAME), 'utf8'),
-  ) as Config;
+  const config = yaml.load(readFileSync(join(__dirname, YAML_CONFIG_FILENAME), 'utf8')) as Config;
 
   if (config.app.http.port < 1024 || config.app.http.port > 10000) {
     throw new Error('HTTP port must be between 1024 and 49151');
