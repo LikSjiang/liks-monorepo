@@ -1,6 +1,6 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { FindOneOptions, Like, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { EncryptionUtil, isNotEmpty } from '../../utils/index';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -12,8 +12,9 @@ export class UserService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
-
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  // 选择返回的字段
+  selectFields: FindOneOptions<User>['select'] = ['id', 'username', 'nickname', 'email', 'tel', 'status', 'gender', 'birthday', 'createdAt', 'updatedAt'];
+  async create(createUserDto: CreateUserDto): Promise<User | null> {
     const { username, email, password } = createUserDto;
 
     // 检查用户是否已存在
@@ -36,7 +37,8 @@ export class UserService {
     });
     console.log('新增用户：==>', user);
     // 保存用户到数据库
-    return await this.usersRepository.save(user);
+    await this.usersRepository.save(user);
+    return null;
   }
 
   async findByUsername(username: string): Promise<User | null> {
@@ -48,7 +50,6 @@ export class UserService {
     if (!user) {
       return null;
     }
-
     const isValid = await EncryptionUtil.validatePassword(password, user.password);
     return isValid ? user : null;
   }
@@ -57,12 +58,20 @@ export class UserService {
     return await this.usersRepository.findOne({ where: { id } });
   }
 
-  // 分页查询所有用户，username 可选， tel 可选， nickname 可选， status 可选，gender 可选，deleted 可选
+  // 分页查询所有用户
   async findAll(page: number = 1, size: number = 10, username?: string, tel?: string, nickname?: string, status?: number, gender?: string, deleted?: number): Promise<User[]> {
     // 处理参数：当参数为空字符串时忽略该条件，查询所有数据
     return await this.usersRepository.find({
+      // 分页：默认第1页，每页10条数据
       skip: (page - 1) * size,
       take: size,
+      // 选择返回的字段
+      select: this.selectFields,
+      // 排序：默认按创建时间降序
+      order: {
+        createdAt: 'DESC',
+      },
+      // 查询条件：username 可选， tel 可选， nickname 可选， status 可选，gender 可选，deleted 可选
       where: {
         username: isNotEmpty(username) ? Like(`%${username}%`) : undefined,
         tel: isNotEmpty(tel) ? Like(`%${tel}%`) : undefined,
@@ -76,26 +85,34 @@ export class UserService {
 
   // 根据ID查询用户
   async findOne(id: string): Promise<User | null> {
-    return await this.usersRepository.findOne({ where: { id } });
+    return await this.usersRepository.findOne({ where: { id }, select: this.selectFields });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User | null> {
     const user = await this.findById(id);
     if (!user) {
-      return null;
+      throw new HttpException('用户不存在!', 400);
     }
-
+    const { password, ...rest } = updateUserDto;
+    // 如果密码存在，重新加密并更新盐
+    if (password) {
+      const { hashedPassword, salt } = await EncryptionUtil.hashPasswordWithNewSalt(password);
+      user.password = hashedPassword;
+      user.salt = salt;
+    }
     // 更新用户信息
-    Object.assign(user, updateUserDto);
-    return await this.usersRepository.save(user);
+    const updatedUser = this.usersRepository.merge(user, rest);
+    console.log('updatedUser', updatedUser);
+    await this.usersRepository.save(updatedUser);
+    return null;
   }
 
   async remove(id: string): Promise<User | null> {
     const user = await this.findById(id);
     if (!user) {
-      return null;
+      throw new HttpException('用户不存在!', 400);
     }
-
-    return await this.usersRepository.remove(user);
+    await this.usersRepository.remove(user);
+    return null;
   }
 }
