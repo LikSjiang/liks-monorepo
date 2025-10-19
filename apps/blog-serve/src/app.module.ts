@@ -6,6 +6,7 @@
  * @LastEditTime: 2025-10-16 18:01:50
  */
 import { Module } from '@nestjs/common';
+// import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -14,6 +15,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MulterModule } from '@nestjs/platform-express';
 import { UserModule } from './modules/user/user.module';
 import type { MysqlConfig } from './config/config.types';
+import { AuthModule } from './modules/auth/auth.module';
+// import { AuthGuard } from './modules/auth/auth.guard';
 
 @Module({
   imports: [
@@ -46,8 +49,16 @@ import type { MysqlConfig } from './config/config.types';
       inject: [ConfigService],
     }),
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // 注册为全局守卫
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard,
+    // },
+  ],
 })
 export class AppModule {}

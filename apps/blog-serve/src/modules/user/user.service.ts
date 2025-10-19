@@ -14,7 +14,9 @@ export class UserService {
   ) {}
   // 选择返回的字段
   selectFields: FindOneOptions<User>['select'] = ['id', 'username', 'nickname', 'email', 'tel', 'status', 'gender', 'birthday', 'createdAt', 'updatedAt'];
-  async create(createUserDto: CreateUserDto): Promise<User | null> {
+
+  // 创建用户
+  async create(createUserDto: CreateUserDto): Promise<null> {
     const { username, email, password } = createUserDto;
 
     // 检查用户是否已存在
@@ -41,21 +43,25 @@ export class UserService {
     return null;
   }
 
+  // 根据用户名查询用户
   async findByUsername(username: string): Promise<User | null> {
     return await this.usersRepository.findOne({ where: { username } });
   }
 
+  // 验证用户密码
   async validateUser(username: string, password: string): Promise<User | null> {
     const user = await this.findByUsername(username);
     if (!user) {
       return null;
     }
     const isValid = await EncryptionUtil.validatePassword(password, user.password);
+    console.log('validateUser', isValid, user);
     return isValid ? user : null;
   }
 
+  // 根据ID查询用户
   async findById(id: string): Promise<User | null> {
-    return await this.usersRepository.findOne({ where: { id } });
+    return await this.usersRepository.findOne({ where: { id }, select: this.selectFields });
   }
 
   // 分页查询所有用户
@@ -88,7 +94,8 @@ export class UserService {
     return await this.usersRepository.findOne({ where: { id }, select: this.selectFields });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User | null> {
+  // 更新用户信息
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<null> {
     const user = await this.findById(id);
     if (!user) {
       throw new HttpException('用户不存在!', 400);
@@ -107,12 +114,15 @@ export class UserService {
     return null;
   }
 
-  async remove(id: string): Promise<User | null> {
+  // 删除用户-软删除
+  async remove(id: string): Promise<null> {
     const user = await this.findById(id);
     if (!user) {
       throw new HttpException('用户不存在!', 400);
     }
-    await this.usersRepository.remove(user);
+    // 将deleted字段设置为1
+    await this.usersRepository.save({ ...user, deleted: 1 });
+    // await this.usersRepository.softRemove(user);
     return null;
   }
 }

@@ -5,6 +5,9 @@
  * @LastEditors: liks
  * @LastEditTime: 2025-10-16 17:37:32
  */
+
+import { JwtSignOptions } from '@nestjs/jwt';
+
 // 根据 config.yaml 定义配置文件类型
 export type HttpConfig = {
   host: string;
@@ -56,4 +59,10 @@ export type Config = {
     mysql: MysqlConfig;
   };
   swagger: SwaggerConfig;
+};
+
+export type JwtConfig = {
+  secret: string;
+  signOptions: JwtSignOptions;
+  global: boolean;
 };
