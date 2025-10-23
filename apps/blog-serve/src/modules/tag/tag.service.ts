@@ -33,11 +33,20 @@ export class TagService {
    * @description: 分页查询标签
    * @return {*}
    */
-  async findAll(page: number = 1, size: number = 10): Promise<Tag[]> {
-    return await this.tagRepository.find({
+  async findAll(page: number = 1, size: number = 10): Promise<Global.ListRecord<Tag>> {
+    const [tags, total] = await this.tagRepository.findAndCount({
       skip: (page - 1) * size,
       take: size,
     });
+    const totalPages = Math.ceil(total / size);
+    return {
+      list: tags,
+      size,
+      page,
+      pages: totalPages,
+      total,
+      isEnd: [page, 0].includes(totalPages),
+    };
   }
 
   /**

@@ -24,11 +24,20 @@ export class CategoryService {
     return null;
   }
 
-  async findAll(page: number = 1, size: number = 10): Promise<Category[]> {
-    return this.categoryRepository.find({
+  async findAll(page: number = 1, size: number = 10): Promise<Global.ListRecord<Category>> {
+    const [categories, total] = await this.categoryRepository.findAndCount({
       skip: (page - 1) * size,
       take: size,
     });
+    const totalPages = Math.ceil(total / size);
+    return {
+      list: categories,
+      size,
+      page,
+      pages: totalPages,
+      total,
+      isEnd: [page, 0].includes(totalPages),
+    };
   }
 
   findList(): Promise<Category[]> {

@@ -65,9 +65,9 @@ export class UserService {
   }
 
   // 分页查询所有用户
-  async findAll(page: number = 1, size: number = 10, username?: string, tel?: string, nickname?: string, status?: number, gender?: string, deleted?: number): Promise<User[]> {
+  async findAll(page: number = 1, size: number = 10, username?: string, tel?: string, nickname?: string, status?: number, gender?: string, deleted?: number): Promise<Global.ListRecord<User>> {
     // 处理参数：当参数为空字符串时忽略该条件，查询所有数据
-    return await this.usersRepository.find({
+    const [users, total] = await this.usersRepository.findAndCount({
       // 分页：默认第1页，每页10条数据
       skip: (page - 1) * size,
       take: size,
@@ -87,6 +87,15 @@ export class UserService {
         deleted: isNotEmpty(deleted) ? deleted : undefined,
       },
     });
+    const totalPages = Math.ceil(total / size);
+    return {
+      list: users,
+      size,
+      page,
+      pages: totalPages,
+      total,
+      isEnd: [page, 0].includes(totalPages),
+    };
   }
 
   // 根据ID查询用户

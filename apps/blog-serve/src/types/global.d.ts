@@ -11,4 +11,13 @@ declare namespace Global {
   interface MyRecord {
     [key: string]: any;
   }
+
+  type ListRecord<T> = {
+    list: T[];
+    size: number;
+    page: number;
+    total: number;
+    pages: number;
+    isEnd: boolean;
+  };
 }
