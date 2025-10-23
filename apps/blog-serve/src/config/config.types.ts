@@ -3,7 +3,7 @@
  * @Author: liks
  * @Date: 2025-10-16 10:46:58
  * @LastEditors: liks
- * @LastEditTime: 2025-10-16 17:37:32
+ * @LastEditTime: 2025-10-23 15:50:09
  */
 
 import { JwtSignOptions } from '@nestjs/jwt';
@@ -65,4 +65,5 @@ export type JwtConfig = {
   secret: string;
   signOptions: JwtSignOptions;
   global: boolean;
+  refreshJwtSignOptions: JwtSignOptions;
 };

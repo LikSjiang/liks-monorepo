@@ -6,3 +6,4 @@ zhangsan
 tinyint
 metatype
 lisi
+multer

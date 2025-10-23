@@ -48,9 +48,10 @@ multer:
 jwt:
   global: true
   # 密钥
-  secret: 'Lj!hDaw165wdi4u@Kisd5kfhkjsd**.,uygL'
+  secret: 'Lj!hDaw165wdi4u@Kind5kf**.,uygL'
   # 刷新令牌过期时间
-  refreshTokenExpiresIn: '7d'
+  refreshJwtSignOptions:
+    expiresIn: '7d'
   signOptions:
     # 过期时间
     expiresIn: '24h'

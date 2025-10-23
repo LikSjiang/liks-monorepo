@@ -1,8 +1,15 @@
+/*
+ * @Description: 认证模块
+ * @Author: liks
+ * @Date: 2025-10-23 14:56:35
+ * @LastEditors: liks
+ * @LastEditTime: 2025-10-23 15:06:48
+ */
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
-import { JwtModule, JwtSignOptions } from '@nestjs/jwt';
+import { JwtModule, JwtSignOptions, JwtService } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
 import { JwtConfig } from '../../config/config.types';
@@ -31,6 +38,7 @@ import { JwtConfig } from '../../config/config.types';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtService],
+  exports: [AuthService, JwtService],
 })
 export class AuthModule {}

@@ -3,10 +3,9 @@
  * @Author: liks
  * @Date: 2025-10-16 09:48:15
  * @LastEditors: liks
- * @LastEditTime: 2025-10-16 18:01:50
+ * @LastEditTime: 2025-10-23 15:05:00
  */
 import { Module } from '@nestjs/common';
-// import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -16,7 +15,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { UserModule } from './modules/user/user.module';
 import type { MysqlConfig } from './config/config.types';
 import { AuthModule } from './modules/auth/auth.module';
-// import { AuthGuard } from './modules/auth/auth.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './modules/auth/auth.guard';
 
 @Module({
   imports: [
@@ -55,10 +55,10 @@ import { AuthModule } from './modules/auth/auth.module';
   providers: [
     AppService,
     // 注册为全局守卫
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}
