@@ -1,33 +1,21 @@
 /*
  * @Description:
  * @Author: liks
- * @Date: 2025-10-23 16:20:15
+ * @Date: 2025-10-23 16:53:38
  * @LastEditors: liks
- * @LastEditTime: 2025-10-23 16:54:42
+ * @LastEditTime: 2025-10-23 16:55:27
  */
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity({ name: 'category' })
-export class Category {
-  @PrimaryGeneratedColumn('uuid', { comment: '分类ID' })
+@Entity('tag')
+export class Tag {
+  @PrimaryGeneratedColumn('uuid', { comment: '标签ID' })
   id: string;
 
-  @Column({ type: 'varchar', length: 50, comment: '分类名称' })
+  @Column({ type: 'varchar', length: 50, comment: '标签名称' })
   name: string;
 
-  @Column({ type: 'int', default: 0, comment: '排序' })
-  sort: number;
-
-  @Column({
-    type: 'varchar',
-    name: 'p_id',
-    nullable: true,
-    length: 50,
-    comment: '父分类id',
-  })
-  pId: string;
-
-  @Column({ type: 'varchar', length: 255, nullable: true, comment: '链接' })
+  @Column({ type: 'varchar', length: 255, nullable: true, comment: '标签链接' })
   link: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true, comment: '关键词' })
