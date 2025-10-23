@@ -3,7 +3,7 @@
  * @Author: liks
  * @Date: 2025-10-16 09:48:15
  * @LastEditors: liks
- * @LastEditTime: 2025-10-23 15:05:00
+ * @LastEditTime: 2025-10-23 16:50:10
  */
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -17,6 +17,7 @@ import type { MysqlConfig } from './config/config.types';
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './modules/auth/auth.guard';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { AuthGuard } from './modules/auth/auth.guard';
     }),
     UserModule,
     AuthModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [

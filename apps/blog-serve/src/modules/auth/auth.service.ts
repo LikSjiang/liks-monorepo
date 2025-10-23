@@ -59,9 +59,6 @@ export class AuthService {
       };
     } catch (error) {
       console.log('refreshToken-error', error);
-      if (error.name === 'TokenExpiredError') {
-        throw new UnauthorizedException('刷新令牌已过期');
-      }
       throw new UnauthorizedException('刷新令牌无效');
     }
   }

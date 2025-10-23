@@ -3,7 +3,7 @@
  * @Author: liks
  * @Date: 2025-10-23 14:56:35
  * @LastEditors: liks
- * @LastEditTime: 2025-10-23 15:30:19
+ * @LastEditTime: 2025-10-23 16:49:11
  */
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -46,8 +46,6 @@ export class AuthGuard implements CanActivate {
 
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    console.log('type', type);
-    console.log('token', token);
     return type === 'Bearer' ? token : undefined;
   }
 }
