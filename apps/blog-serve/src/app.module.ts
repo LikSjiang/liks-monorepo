@@ -20,6 +20,7 @@ import { AuthGuard } from './modules/auth/auth.guard';
 import { CategoryModule } from './modules/category/category.module';
 import { TagModule } from './modules/tag/tag.module';
 import { RoleModule } from './modules/role/role.module';
+import { PermissonModule } from './modules/permisson/permisson.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { RoleModule } from './modules/role/role.module';
     CategoryModule,
     TagModule,
     RoleModule,
+    PermissonModule,
   ],
   controllers: [AppController],
   providers: [

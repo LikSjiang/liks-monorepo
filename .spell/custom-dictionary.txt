@@ -7,3 +7,5 @@ tinyint
 metatype
 lisi
 multer
+permisson
+permissons
