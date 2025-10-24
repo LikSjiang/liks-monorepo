@@ -3,9 +3,11 @@
  * @Author: liks
  * @Date: 2025-10-24 09:46:57
  * @LastEditors: liks
- * @LastEditTime: 2025-10-24 11:15:52
+ * @LastEditTime: 2025-10-24 12:00:00
  */
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Permisson } from '../../permisson/entities/permisson.entity';
+import { RolePermisson } from './role-permisson.entity';
 
 @Entity('role')
 export class Role {
@@ -36,4 +38,23 @@ export class Role {
     comment: '更新时间',
   })
   updatedAt: Date;
+
+  // 多对多关联权限
+  @ManyToMany(() => Permisson, (permisson) => permisson.roles, { cascade: true })
+  @JoinTable({
+    name: 'role_permisson',
+    joinColumn: {
+      name: 'role_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'permisson_id',
+      referencedColumnName: 'id',
+    },
+  })
+  permissons: Permisson[];
+
+  // 中间表关联
+  @ManyToMany(() => RolePermisson)
+  rolePermissons: RolePermisson[];
 }

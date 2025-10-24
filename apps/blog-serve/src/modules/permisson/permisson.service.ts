@@ -9,11 +9,15 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePermissonDto } from './dto/create-permisson.dto';
 import { UpdatePermissonDto } from './dto/update-permisson.dto';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Permisson } from './entities/permisson.entity';
 
 @Injectable()
 export class PermissonService {
-  constructor(private readonly permissonRepository: Repository<Permisson>) {}
+  constructor(
+    @InjectRepository(Permisson)
+    private readonly permissonRepository: Repository<Permisson>,
+  ) {}
 
   async create(createPermissonDto: CreatePermissonDto): Promise<null> {
     await this.permissonRepository.save(createPermissonDto);

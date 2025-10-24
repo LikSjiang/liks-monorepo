@@ -3,9 +3,10 @@
  * @Author: liks
  * @Date: 2025-10-24 11:05:24
  * @LastEditors: liks
- * @LastEditTime: 2025-10-24 11:13:28
+ * @LastEditTime: 2025-10-24 12:00:00
  */
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
+import { Role } from '../../role/entities/role.entity';
 
 @Entity('permisson')
 export class Permisson {
@@ -36,4 +37,8 @@ export class Permisson {
     comment: '更新时间',
   })
   updatedAt: Date;
+
+  // 多对多关联角色
+  @ManyToMany(() => Role, (role) => role.permissons)
+  roles: Role[];
 }

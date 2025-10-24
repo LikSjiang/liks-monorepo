@@ -3,6 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/s
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { BindPermissonDto } from './dto/bind-permisson.dto';
 
 /**
  * 角色管理控制器
@@ -222,5 +223,107 @@ export class RoleController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.roleService.remove(id);
+  }
+
+  /**
+   * 角色绑定权限
+   * @param roleId 角色ID
+   * @param bindPermissonDto 权限ID列表
+   * @returns 绑定结果
+   */
+  @ApiOperation({
+    summary: '角色绑定权限',
+    description: '为指定角色绑定多个权限，会覆盖原有的权限绑定',
+    operationId: 'bindRolePermissons',
+  })
+  @ApiParam({
+    name: 'roleId',
+    description: '角色ID',
+    required: true,
+    example: 'uuid123',
+  })
+  @ApiBody({
+    type: BindPermissonDto,
+    description: '权限ID列表',
+    required: true,
+    examples: {
+      example1: {
+        summary: '绑定多个权限示例',
+        value: {
+          permissonIds: ['perm-uuid1', 'perm-uuid2', 'perm-uuid3'],
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: '权限绑定成功',
+    content: {
+      'application/json': {
+        example: {
+          success: true,
+          message: '角色管理员权限绑定成功，共绑定3个权限',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: '角色不存在或部分权限不存在',
+  })
+  @Post(':roleId/bind-permissons')
+  bindPermissons(@Param('roleId') roleId: string, @Body() bindPermissonDto: BindPermissonDto) {
+    return this.roleService.bindPermissons(roleId, bindPermissonDto);
+  }
+
+  /**
+   * 获取角色拥有的权限
+   * @param roleId 角色ID
+   * @returns 权限列表
+   */
+  @ApiOperation({
+    summary: '获取角色权限',
+    description: '获取指定角色已绑定的所有权限列表',
+    operationId: 'getRolePermissons',
+  })
+  @ApiParam({
+    name: 'roleId',
+    description: '角色ID',
+    required: true,
+    example: 'uuid123',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '获取权限列表成功',
+    content: {
+      'application/json': {
+        example: [
+          {
+            id: 'perm-uuid1',
+            name: '用户管理',
+            code: 'user:manage',
+            description: '用户管理权限',
+            createdAt: '2025-10-24T09:46:57Z',
+            updatedAt: '2025-10-24T09:46:57Z',
+          },
+          {
+            id: 'perm-uuid2',
+            name: '角色管理',
+            code: 'role:manage',
+            description: '角色管理权限',
+            createdAt: '2025-10-24T09:46:57Z',
+            updatedAt: '2025-10-24T09:46:57Z',
+          },
+        ],
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: '角色不存在',
+  })
+  @Get(':roleId/permissons')
+  getRolePermissons(@Param('roleId') roleId: string) {
+    return this.roleService.getRolePermissons(roleId);
   }
 }
