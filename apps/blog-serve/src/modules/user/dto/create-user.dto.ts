@@ -1,5 +1,13 @@
+/*
+ * @Description: 创建用户DTO
+ * @Author: liks
+ * @Date: 2025-10-23 14:56:35
+ * @LastEditors: liks
+ * @LastEditTime: 2025-10-24 10:48:33
+ */
 import { IsEmail, IsString, MinLength, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserGender } from '../entities/user.entity';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -62,7 +70,7 @@ export class CreateUserDto {
     example: '0',
   })
   @IsString()
-  gender: string;
+  gender: UserGender;
 
   @ApiProperty({
     description: '生日，格式为YYYY-MM-DD',

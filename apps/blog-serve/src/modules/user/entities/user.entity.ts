@@ -1,5 +1,30 @@
-// src/users/user.entity.ts
+/*
+ * @Description: 用户实体
+ * @Author: liks
+ * @Date: 2025-10-23 14:56:35
+ * @LastEditors: liks
+ * @LastEditTime: 2025-10-24 10:53:42
+ */
 import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
+
+// export enum UserRole {
+//   ADMIN = 'admin', // 管理员
+//   EDITOR = 'editor', // 编辑
+//   AUTHOR = 'author', // 作者
+//   SUBSCRIBER = 'subscriber', // 订阅者
+// }
+
+export enum UserStatus {
+  ACTIVE = 'active', // 活跃
+  INACTIVE = 'inactive', // 不活跃
+  BANNED = 'banned', // 被封禁
+}
+
+export enum UserGender {
+  MALE = '1', // 男
+  FEMALE = '0', // 女
+  UNKNOWN = '2', // 未知
+}
 
 @Entity('users')
 export class User {
@@ -31,24 +56,32 @@ export class User {
   avatar: string;
 
   @Column({
-    type: 'varchar',
-    length: 1,
+    type: 'enum',
+    enum: UserGender,
     comment: '性别',
-    default: 2, // 1: 男, 0: 女, 2: 未知
+    default: UserGender.UNKNOWN, // 1: 男, 0: 女, 2: 未知
   })
-  gender: string;
+  gender: UserGender;
 
   @Column({ type: 'varchar', length: 20, nullable: true, comment: '生日' })
   birthday: string;
 
+  @Column({ type: 'text', nullable: true, comment: '个人简介' })
+  bio: string;
+
+  // @Column({
+  //   type: 'enum',
+  //   enum: UserRole,
+  //   default: UserRole.AUTHOR,
+  // })
+  // role: UserRole;
+
   @Column({
-    type: 'tinyint',
-    unsigned: true,
-    nullable: true,
-    comment: '状态',
-    default: 1, // 1: 正常, 0: 禁用
+    type: 'enum',
+    enum: UserStatus,
+    default: UserStatus.ACTIVE,
   })
-  status: number;
+  status: UserStatus;
 
   @Column({
     type: 'tinyint',
@@ -77,4 +110,10 @@ export class User {
     comment: '更新时间',
   })
   updatedAt: Date;
+
+  @Column({ type: 'timestamp', nullable: true, name: 'last_login_at', comment: '最后登录时间' })
+  lastLoginAt: Date;
+
+  @Column({ type: 'varchar', length: 255, nullable: true, comment: '最后登录IP' })
+  lastLoginIp: string;
 }

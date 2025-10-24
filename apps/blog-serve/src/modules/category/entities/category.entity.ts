@@ -3,7 +3,7 @@
  * @Author: liks
  * @Date: 2025-10-23 16:20:15
  * @LastEditors: liks
- * @LastEditTime: 2025-10-23 16:54:42
+ * @LastEditTime: 2025-10-24 10:57:11
  */
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
@@ -15,8 +15,11 @@ export class Category {
   @Column({ type: 'varchar', length: 50, comment: '分类名称' })
   name: string;
 
-  @Column({ type: 'int', default: 0, comment: '排序' })
+  @Column({ type: 'int', nullable: true, comment: '排序' })
   sort: number;
+
+  @Column({ type: 'int', default: 0, comment: '文章数量' })
+  postCount: number;
 
   @Column({
     type: 'varchar',
@@ -33,7 +36,7 @@ export class Category {
   @Column({ type: 'varchar', length: 255, nullable: true, comment: '关键词' })
   keywords: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true, comment: '描述' })
+  @Column({ type: 'text', nullable: true, comment: '描述' })
   description: string;
 
   @CreateDateColumn({

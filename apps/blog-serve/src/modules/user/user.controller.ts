@@ -4,7 +4,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UseBaseValuePipe } from '../../core/pipe/base-value.pipe';
-
+import { UserStatus, UserGender } from './entities/user.entity';
 @ApiTags('用户管理')
 @Controller('user')
 export class UserController {
@@ -96,12 +96,10 @@ export class UserController {
     @Query('username') username?: string,
     @Query('tel') tel?: string,
     @Query('nickname') nickname?: string,
-    @Query('status', new UseBaseValuePipe()) status?: number,
-    @Query('gender') gender?: string,
+    @Query('status', new UseBaseValuePipe()) status?: UserStatus,
+    @Query('gender') gender?: UserGender,
     @Query('deleted', new UseBaseValuePipe()) deleted?: number,
   ) {
-    console.log('page :==> ', page, 'size :==> ', size, 'username', username, 'tel', tel, 'nickname', nickname, 'status', status, 'gender', gender, 'deleted', deleted);
-
     return this.userService.findAll(page, size, username, tel, nickname, status, gender, deleted);
   }
 
