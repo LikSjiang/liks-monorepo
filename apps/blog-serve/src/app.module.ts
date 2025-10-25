@@ -21,6 +21,7 @@ import { CategoryModule } from './modules/category/category.module';
 import { TagModule } from './modules/tag/tag.module';
 import { RoleModule } from './modules/role/role.module';
 import { PermissonModule } from './modules/permisson/permisson.module';
+import { ArticleModule } from './modules/article/article.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { PermissonModule } from './modules/permisson/permisson.module';
     TagModule,
     RoleModule,
     PermissonModule,
+    ArticleModule,
   ],
   controllers: [AppController],
   providers: [
