@@ -3,22 +3,26 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ArticleLike } from '../entities/article-like.entity';
 import { Article } from '../entities/article.entity';
-import { User } from '../../user/entities/user.entity';
 import { CreateArticleLikeDto } from '../dto/create-article-like.dto';
+import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class ArticleLikeService {
   constructor(
     @InjectRepository(ArticleLike) private articleLikeRepository: Repository<ArticleLike>,
     @InjectRepository(Article) private articleRepository: Repository<Article>,
+    private readonly userService: UserService,
   ) {}
 
   /**
    * 用户点赞文章
    */
-  async likeArticle(user: User, createArticleLikeDto: CreateArticleLikeDto): Promise<ArticleLike> {
+  async likeArticle(userId: string, createArticleLikeDto: CreateArticleLikeDto): Promise<ArticleLike> {
+    const user = await this.userService.findOne(userId);
+    if (!user) {
+      throw new NotFoundException('用户不存在');
+    }
     const { articleId } = createArticleLikeDto;
-
     // 检查文章是否存在
     const article = await this.articleRepository.findOne({ where: { id: articleId } });
     if (!article) {
@@ -28,7 +32,7 @@ export class ArticleLikeService {
     // 检查是否已经点赞
     const existingLike = await this.articleLikeRepository.findOne({
       where: {
-        userId: user.id,
+        userId,
         articleId,
         isLiked: 1,
       },
@@ -41,7 +45,7 @@ export class ArticleLikeService {
     // 尝试查找已取消点赞的记录
     let likeRecord = await this.articleLikeRepository.findOne({
       where: {
-        userId: user.id,
+        userId,
         articleId,
       },
     });
@@ -60,7 +64,7 @@ export class ArticleLikeService {
       } else {
         // 创建新的点赞记录
         likeRecord = this.articleLikeRepository.create({
-          userId: user.id,
+          userId,
           articleId,
           user,
           article,
@@ -86,7 +90,7 @@ export class ArticleLikeService {
   /**
    * 用户取消点赞文章
    */
-  async unlikeArticle(user: User, articleId: string): Promise<ArticleLike> {
+  async unlikeArticle(userId: string, articleId: string): Promise<ArticleLike> {
     // 检查文章是否存在
     const article = await this.articleRepository.findOne({ where: { id: articleId } });
     if (!article) {
@@ -96,7 +100,7 @@ export class ArticleLikeService {
     // 查找点赞记录
     const likeRecord = await this.articleLikeRepository.findOne({
       where: {
-        userId: user.id,
+        userId,
         articleId,
         isLiked: 1,
       },
