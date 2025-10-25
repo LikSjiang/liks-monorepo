@@ -5,8 +5,9 @@
  * @LastEditors: liks
  * @LastEditTime: 2025-10-24 10:53:42
  */
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
-
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Comment } from '../../comment/entities/comment.entity';
+import { Article } from '../../article/entities/article.entity';
 // export enum UserRole {
 //   ADMIN = 'admin', // 管理员
 //   EDITOR = 'editor', // 编辑
@@ -116,4 +117,10 @@ export class User {
 
   @Column({ type: 'varchar', length: 255, nullable: true, comment: '最后登录IP' })
   lastLoginIp: string;
+
+  @OneToMany(() => Article, (article) => article.author)
+  articles: Article[];
+
+  @OneToMany(() => Comment, (comment) => comment.author)
+  comments: Comment[];
 }

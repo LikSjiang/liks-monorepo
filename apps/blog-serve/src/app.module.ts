@@ -22,6 +22,7 @@ import { TagModule } from './modules/tag/tag.module';
 import { RoleModule } from './modules/role/role.module';
 import { PermissonModule } from './modules/permisson/permisson.module';
 import { ArticleModule } from './modules/article/article.module';
+import { CommentModule } from './modules/comment/comment.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { ArticleModule } from './modules/article/article.module';
     RoleModule,
     PermissonModule,
     ArticleModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [

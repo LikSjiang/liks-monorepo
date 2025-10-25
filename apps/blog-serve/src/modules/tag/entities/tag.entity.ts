@@ -5,7 +5,9 @@
  * @LastEditors: liks
  * @LastEditTime: 2025-10-24 10:59:56
  */
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Article } from '../../article/entities/article.entity';
+import { Comment } from '../../comment/entities/comment.entity';
+import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('tag')
 export class Tag {
@@ -45,4 +47,10 @@ export class Tag {
     comment: '更新时间',
   })
   updatedAt: Date;
+
+  @ManyToMany(() => Article, (article) => article.tags)
+  articles: Article[];
+
+  @OneToMany(() => Comment, (comment) => comment.article, { cascade: true })
+  comments: Comment[];
 }

@@ -5,7 +5,8 @@
  * @LastEditors: liks
  * @LastEditTime: 2025-10-24 10:57:11
  */
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Article } from '../../article/entities/article.entity';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity({ name: 'category' })
 export class Category {
@@ -21,14 +22,20 @@ export class Category {
   @Column({ type: 'int', default: 0, comment: '文章数量' })
   postCount: number;
 
+  @ManyToOne(() => Category, (category) => category.children, { onDelete: 'SET NULL', nullable: true })
+  parent?: Category;
+
+  @OneToMany(() => Category, (category) => category.parent)
+  children: Category[];
+
   @Column({
     type: 'varchar',
-    name: 'p_id',
+    name: 'parent_id',
     nullable: true,
     length: 50,
     comment: '父分类id',
   })
-  pId: string;
+  parentId?: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true, comment: '链接' })
   link: string;
@@ -54,4 +61,7 @@ export class Category {
     comment: '更新时间',
   })
   updatedAt: Date;
+
+  @OneToMany(() => Article, (article) => article.category)
+  articles: Article[];
 }

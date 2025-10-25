@@ -1,4 +1,8 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Tag } from '../../tag/entities/tag.entity';
+import { User } from '../../user/entities/user.entity';
+import { Comment } from '../../comment/entities/comment.entity';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Category } from 'src/modules/category/entities/category.entity';
 
 export enum ArticleStatus {
   DRAFT = 'draft', // 草稿
@@ -29,6 +33,9 @@ export class Article {
 
   @Column({ type: 'varchar', nullable: true, length: 255, comment: '封面图' })
   cover?: string;
+
+  @ManyToOne(() => User, (user) => user.articles, { onDelete: 'SET NULL', nullable: true })
+  author?: User;
 
   @Column({ type: 'varchar', length: 255, nullable: true, comment: '作者ID' })
   authorId: string;
@@ -87,4 +94,23 @@ export class Article {
     comment: '更新时间',
   })
   updatedAt: Date;
+
+  @Column({ type: 'timestamp', nullable: true, name: 'published_at', comment: '发布时间' })
+  publishedAt?: Date;
+
+  @ManyToOne(() => Category, (category) => category.articles, { onDelete: 'SET NULL', nullable: true })
+  category?: Category;
+  @Column({ nullable: true, comment: '分类ID' })
+  categoryId?: string;
+
+  @ManyToMany(() => Tag, (tag) => tag.articles, { onDelete: 'CASCADE' })
+  @JoinTable({
+    name: 'post_tags',
+    joinColumn: { name: 'post_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'tag_id', referencedColumnName: 'id' },
+  })
+  tags: Tag[];
+
+  @OneToMany(() => Comment, (comment) => comment.article, { cascade: true })
+  comments: Comment[];
 }
