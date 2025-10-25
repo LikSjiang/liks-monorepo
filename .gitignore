@@ -16,7 +16,7 @@ dist
 *.suo
 *.ntvs*
 dist
-
+staticFiles
 # OS
 .DS_Store
 Thumbs.db

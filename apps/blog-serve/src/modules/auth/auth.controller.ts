@@ -13,7 +13,7 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { IsPublic } from '../../core/decorators/public.decorator';
 import { JwtPayload } from 'jsonwebtoken';
 
-@ApiTags('认证管理')
+@ApiTags('登录鉴权')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
