@@ -20,6 +20,10 @@ export class PermissonService {
   ) {}
 
   async create(createPermissonDto: CreatePermissonDto): Promise<null> {
+    const info = await this.findOne(createPermissonDto?.parentId || '');
+    if (!info) {
+      throw new HttpException('父权限不存在', HttpStatus.BAD_REQUEST);
+    }
     await this.permissonRepository.save(createPermissonDto);
     return null;
   }
@@ -45,6 +49,9 @@ export class PermissonService {
   }
 
   findOne(id: string): Promise<Permisson | null> {
+    if (!id) {
+      return Promise.resolve(null);
+    }
     return this.permissonRepository.findOne({ where: { id } });
   }
 
@@ -52,6 +59,12 @@ export class PermissonService {
     const info = await this.findOne(id);
     if (!info) {
       throw new HttpException('权限不存在', HttpStatus.BAD_REQUEST);
+    }
+    if (updatePermissonDto?.parentId) {
+      const parentInfo = await this.findOne(updatePermissonDto?.parentId);
+      if (!parentInfo) {
+        throw new HttpException('父权限不存在', HttpStatus.BAD_REQUEST);
+      }
     }
     const updateInfo = {
       ...info,

@@ -43,6 +43,9 @@ export class RoleService {
   }
 
   findOne(id: string): Promise<Role | null> {
+    if (!id) {
+      return Promise.resolve(null);
+    }
     return this.roleRepository.findOneBy({ id });
   }
 

@@ -61,6 +61,9 @@ export class UserService {
 
   // 根据ID查询用户
   async findById(id: string): Promise<User | null> {
+    if (!id) {
+      return Promise.resolve(null);
+    }
     return await this.usersRepository.findOne({ where: { id }, select: this.selectFields });
   }
 

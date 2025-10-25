@@ -63,6 +63,9 @@ export class TagService {
    * @return {*}
    */
   async findOne(id: string): Promise<Tag | null> {
+    if (!id) {
+      return Promise.resolve(null);
+    }
     return await this.tagRepository.findOne({
       where: {
         id,

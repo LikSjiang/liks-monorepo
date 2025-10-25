@@ -45,6 +45,9 @@ export class CategoryService {
   }
 
   async findOne(id: string): Promise<Category | null> {
+    if (!id) {
+      return Promise.resolve(null);
+    }
     return this.categoryRepository.findOne({
       where: {
         id,
