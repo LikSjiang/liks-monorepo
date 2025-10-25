@@ -18,7 +18,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get<ConfigService>(ConfigService);
   const appConfig = config.get<AppConfig>('app', {} as AppConfig);
-  console.log('app-config', appConfig);
+  // console.log('app-config', appConfig);
   // 配置全局前缀
   app.setGlobalPrefix(appConfig.api.prefix);
   // 配置全局拦截器

@@ -25,12 +25,18 @@ import { ArticleModule } from './modules/article/article.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { SettingModule } from './modules/setting/setting.module';
 import { FileModule } from './modules/file/file.module';
-
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { fileStoragePath } from './utils/constant';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true, // 全局模块，其他模块可以直接注入 ConfigService
       load: [configuration],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: fileStoragePath, // 静态文件目录
+      exclude: ['/api*'], // 可选，排除某些路径
+      serveRoot: '/staticFiles', // 可选，设置静态资源访问的根路径
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

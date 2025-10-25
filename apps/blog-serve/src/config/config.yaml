@@ -41,8 +41,7 @@ swagger:
 
 ## multer 配置
 multer:
-  dest: '../uploads'
-
+  dest: '../staticFiles'
 
 ## jwt 配置
 jwt:
@@ -55,3 +54,8 @@ jwt:
   signOptions:
     # 过期时间
     expiresIn: '24h'
+
+# 静态文件配置
+serveStatic:
+  rootPath: '../staticFiles'
+  serveRoot: '/staticFiles'

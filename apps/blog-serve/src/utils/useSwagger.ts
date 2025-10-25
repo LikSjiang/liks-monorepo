@@ -3,7 +3,7 @@ import { SwaggerConfig } from '../config/config.types';
 import { SwaggerModule, DocumentBuilder, SwaggerCustomOptions } from '@nestjs/swagger';
 
 export function useSwagger(app: INestApplication, swaggerConfig: SwaggerConfig): void {
-  console.log('swagger-config', swaggerConfig);
+  // console.log('swagger-config', swaggerConfig);
   if (!swaggerConfig.enabled) {
     return;
   }

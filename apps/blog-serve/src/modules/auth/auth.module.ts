@@ -25,7 +25,7 @@ import { JwtConfig } from '../../config/config.types';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const jwtConfig: JwtConfig = configService.get<JwtConfig>('jwt', {} as JwtConfig);
-        console.log('jwtConfig', jwtConfig);
+        // console.log('jwtConfig', jwtConfig);
 
         // 从配置中获取 JwtSignOptions
         const jwtSignOptions: JwtSignOptions = jwtConfig.signOptions || { expiresIn: '1h' };
