@@ -23,6 +23,7 @@ import { RoleModule } from './modules/role/role.module';
 import { PermissonModule } from './modules/permisson/permisson.module';
 import { ArticleModule } from './modules/article/article.module';
 import { CommentModule } from './modules/comment/comment.module';
+import { SettingModule } from './modules/setting/setting.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { CommentModule } from './modules/comment/comment.module';
     PermissonModule,
     ArticleModule,
     CommentModule,
+    SettingModule,
   ],
   controllers: [AppController],
   providers: [
