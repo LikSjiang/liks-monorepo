@@ -24,6 +24,7 @@ import { PermissonModule } from './modules/permisson/permisson.module';
 import { ArticleModule } from './modules/article/article.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { SettingModule } from './modules/setting/setting.module';
+import { FileModule } from './modules/file/file.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { SettingModule } from './modules/setting/setting.module';
     ArticleModule,
     CommentModule,
     SettingModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [
