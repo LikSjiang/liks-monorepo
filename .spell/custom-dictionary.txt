@@ -10,3 +10,7 @@ multer
 permisson
 permissons
 longtext
+pathResolve
+warpperEnv
+VITE
+NPROGRESS
