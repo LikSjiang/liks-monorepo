@@ -3,90 +3,32 @@
  * @Author: liks
  * @Date: 2025-10-29 17:12:03
  * @LastEditors: liks
- * @LastEditTime: 2025-10-29 17:51:48
+ * @LastEditTime: 2025-10-30 15:08:37
 -->
 <template>
   <div class="layout">
     <!-- 顶部导航栏 -->
-    <header class="header">
-      <div class="container">
-        <div class="header-content">
-          <div class="logo">
-            <h1>江厌离的博客</h1>
-          </div>
-          <nav class="main-nav">
-            <ul>
-              <li v-for="item in navItems" :key="item.path">
-                <span>{{ item.name }}</span>
-              </li>
-            </ul>
-          </nav>
-          <div class="search-box">
-            <input type="text" placeholder="搜索文章..." />
-            <button type="button">搜索</button>
-          </div>
-          <div class="mobile-menu-btn">
-            <button @click="toggleMobileMenu">☰</button>
-          </div>
-        </div>
-      </div>
-      <!-- 移动端导航菜单 -->
-      <div v-if="showMobileMenu" class="mobile-menu">
-        <ul>
-          <li v-for="item in navItems" :key="item.path">
-            <a :href="item.path" @click="showMobileMenu = false">{{ item.name }}</a>
-          </li>
-        </ul>
-      </div>
-    </header>
+    <LayoutHeader />
 
     <!-- 主要内容区域 -->
     <main class="main">
       <div class="container">
         <div class="content-wrapper">
           <!-- 文章列表区域 -->
-          <div class="article-list">
-            <slot></slot>
-          </div>
+          <ArticleList />
 
           <!-- 侧边栏 -->
           <aside class="sidebar">
             <!-- 作者信息 -->
-            <div class="author-info">
-              <div class="avatar">
-                <img src="../assets/images/lazy-image_1.gif" alt="作者头像" />
-              </div>
-              <h3>江厌离</h3>
-              <p>热爱技术，分享知识</p>
-            </div>
+            <UserInfoCard />
 
             <!-- 分类列表 -->
-            <div class="category-list">
-              <h3>文章分类</h3>
-              <ul>
-                <li v-for="item in categoryList" :key="item.path">
-                  <a :href="item.path">{{ item.name }}</a>
-                </li>
-              </ul>
-            </div>
+            <CardList :list="categoryList" title="文章分类" type="category" />
 
             <!-- 热门标签 -->
-            <div class="tag-cloud">
-              <h3>热门标签</h3>
-              <div class="tags">
-                <a v-for="item in tagList" :key="item.path" :href="item.path">{{ item.name }}</a>
-              </div>
-            </div>
-
+            <CardList :list="tagList" title="热门标签" type="tag" />
             <!-- 热门文章 -->
-            <div class="hot-articles">
-              <h3>热门文章</h3>
-              <ul>
-                <li v-for="item in hotArticleList" :key="item.path">
-                  <a :href="item.path">{{ item.name }}</a>
-                </li>
-              </ul>
-            </div>
+            <CardList :list="hotArticleList" title="热门文章" type="articles" />
           </aside>
         </div>
       </div>
@@ -124,10 +66,16 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import CardList from '@/components/card-list/index.vue';
+import UserInfoCard from './components/user-info-card.vue';
+import LayoutHeader from './components/header.vue';
+import ArticleList from './components/article.vue';
+// import PageFooter from './components/page-footer.vue';
+import { NavItem } from '@/layout/types/layout.interface';
 
 defineOptions({ name: 'LayoutIndex' });
 
-const navItems = ref([
+const navItems = ref<NavItem[]>([
   { name: '首页', path: '/' },
   { name: '文章', path: '/articles' },
   { name: '分类', path: '/categories' },
@@ -136,27 +84,27 @@ const navItems = ref([
 ]);
 
 const categoryList = ref([
-  { name: '前端开发', path: '/categories/frontend' },
-  { name: '后端开发', path: '/categories/backend' },
-  { name: '人工智能', path: '/categories/ai' },
-  { name: '开发工具', path: '/categories/tools' },
-  { name: '其他', path: '/categories/other' },
+  { name: '前端开发', key: '/categories/frontend' },
+  { name: '后端开发', key: '/categories/backend' },
+  { name: '人工智能', key: '/categories/ai' },
+  { name: '开发工具', key: '/categories/tools' },
+  { name: '其他', key: '/categories/other' },
 ]);
 
 const tagList = ref([
-  { name: 'Vue', path: '/tags/vue' },
-  { name: 'React', path: '/tags/react' },
-  { name: 'TypeScript', path: '/tags/typescript' },
-  { name: 'Node.js', path: '/tags/nodejs' },
-  { name: 'Python', path: '/tags/python' },
-  { name: '算法', path: '/tags/algorithm' },
+  { name: 'Vue', key: '/tags/vue' },
+  { name: 'React', key: '/tags/react' },
+  { name: 'TypeScript', key: '/tags/typescript' },
+  { name: 'Node.js', key: '/tags/nodejs' },
+  { name: 'Python', key: '/tags/python' },
+  { name: '算法', key: '/tags/algorithm' },
 ]);
 
 const hotArticleList = ref([
-  { name: 'Vue 3 Composition API 实战教程', path: '/articles/vue-3-composition-api' },
-  { name: 'TypeScript 进阶指南', path: '/articles/typescript-advanced' },
-  { name: '前端性能优化最佳实践', path: '/articles/frontend-performance' },
-  { name: 'React Hooks 深入理解', path: '/articles/react-hooks' },
+  { name: 'Vue 3 Composition API 实战教程', key: '/articles/vue-3-composition-api' },
+  { name: 'TypeScript 进阶指南', key: '/articles/typescript-advanced' },
+  { name: '前端性能优化最佳实践', key: '/articles/frontend-performance' },
+  { name: 'React Hooks 深入理解', key: '/articles/react-hooks' },
 ]);
 
 // 移动端菜单控制
@@ -288,13 +236,6 @@ const currentYear = computed(() => {
   gap: 30px;
 }
 
-.article-list {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
 /* 侧边栏样式 */
 .sidebar {
   display: flex;
@@ -316,59 +257,6 @@ const currentYear = computed(() => {
   color: #333;
   border-bottom: 2px solid #1890ff;
   padding-bottom: 8px;
-}
-
-.author-info {
-  text-align: center;
-  .avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 0 auto 15px;
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-}
-
-.category-list ul,
-.hot-articles ul {
-  list-style: none;
-  padding: 0;
-  li {
-    margin-bottom: 10px;
-    a {
-      color: #666;
-      text-decoration: none;
-      transition: color 0.3s;
-      &:hover {
-        color: #1890ff;
-      }
-    }
-  }
-}
-
-.tag-cloud .tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  a {
-    display: inline-block;
-    padding: 4px 12px;
-    background-color: #f0f0f0;
-    color: #666;
-    text-decoration: none;
-    border-radius: 16px;
-    font-size: 14px;
-    transition: all 0.3s;
-    &:hover {
-      background-color: #1890ff;
-      color: white;
-    }
-  }
 }
 
 /* 页脚样式 */
