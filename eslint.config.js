@@ -19,6 +19,8 @@ export default defineConfig([
     plugins: {
       prettier: eslintPluginPrettier,
     },
+    // 不包含 vue 文件的配置
+    files: ['**/*.{js,jsx,ts,tsx}', '!**/*.vue'],
     languageOptions: {
       ecmaVersion: 'latest', //  ECMAScript 语法支持版本
       sourceType: 'module', // 模块类型
@@ -38,13 +40,25 @@ export default defineConfig([
       'prettier/prettier': ['off', { endOfLine: 'auto' }],
     },
   },
-  //   前端配置
+  // Vue 文件配置
   {
     ignores,
-    files: ['apps/*/**/*.{js,jsx,ts,tsx,vue}', 'packages/components/**/*.{js,jsx,ts,tsx,vue}'],
+    files: ['**/*.vue'],
     extends: [...eslintPluginVue.configs['flat/recommended'], eslintConfigPrettier],
     languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      parser: eslintPluginVue.parser,
+      parserOptions: {
+        parser: tseslint.parser,
+      },
       globals: { ...globals.browser }, // 浏览器全局变量
+    },
+    rules: {
+      // 禁用组件名必须为多单词的规则
+      'vue/multi-word-component-names': 'off',
+      // 禁用属性顺序规则
+      'vue/attributes-order': 'off',
     },
   },
   //   后端配置
