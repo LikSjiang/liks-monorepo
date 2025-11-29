@@ -14,3 +14,4 @@ pathResolve
 warpperEnv
 VITE
 NPROGRESS
+linkify
