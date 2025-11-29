@@ -6,56 +6,35 @@
         <!-- 文章头部信息 -->
         <header class="article-header">
           <div class="article-tags">
-            <span class="article-tag">技术探索</span>
+            <span class="article-tag">{{ articleData.tag }}</span>
           </div>
-          <h1 class="article-title">如何使用Tailwind CSS构建现代响应式界面</h1>
+          <h1 class="article-title">{{ articleData.title }}</h1>
           <div class="article-meta">
             <div class="article-author-info">
-              <img src="https://picsum.photos/id/1005/40/40" alt="作者头像" class="author-avatar" />
-              <span class="author-name">张明</span>
+              <img :src="articleData.authorAvatar" alt="头像" class="author-avatar" />
+              <span class="author-name">{{ articleData.author }}</span>
             </div>
             <div class="article-stats">
-              <span class="article-date">2023年10月15日</span>
-              <span class="article-reading-time">8分钟阅读</span>
-              <span class="article-views">2,345阅读</span>
-              <span class="article-comments">42评论</span>
+              <span class="article-date">{{ articleData.date }}</span>
+              <span class="article-reading-time">{{ articleData.readingTime }}</span>
+              <span class="article-views">{{ articleData.views }}</span>
+              <span class="article-comments">{{ articleData.comments }}</span>
             </div>
           </div>
         </header>
 
         <!-- 文章封面图 -->
         <div class="article-cover">
-          <img src="https://picsum.photos/id/1035/800/400" alt="文章封面" class="cover-image" />
+          <img :src="articleData.coverImage" alt="封面" class="cover-image" />
         </div>
 
         <!-- 文章摘要 -->
         <div class="article-excerpt">
-          <p>Tailwind CSS作为一个实用优先的CSS框架，正在改变前端开发的方式。本文将深入探讨如何利用强大功能构建高效、美观的响应式界面，从基础设置到高级技巧，帮助你掌握这一现代开发工具。</p>
+          <p>{{ articleData.excerpt }}</p>
         </div>
 
-        <!-- 文章内容 -->
-        <div class="article-content">
-          <p>在当今快速发展的前端领域，开发效率和用户体验同样重要。Tailwind CSS作为一个实用优先（utility-first）的CSS框架，通过提供大量预定义的类，让开发者能够直接在HTML中构建界面，而无需编写自定义CSS。</p>
-          <p>本文将从以下几个方面介绍Tailwind CSS的使用方法和最佳实践：</p>
-          <ol>
-            <li>Tailwind CSS的安装与配置</li>
-            <li>实用优先的开发理念与工作流</li>
-            <li>响应式设计实现技巧</li>
-            <li>自定义主题与扩展</li>
-          </ol>
-          <h2>Tailwind CSS的安装与配置</h2>
-          <h3>安装方式</h3>
-          <p>你可以通过npm或yarn来安装Tailwind CSS：</p>
-          <pre><code>npm install -D tailwindcss postcss autoprefixer</code></pre>
-          <h3>配置文件设置</h3>
-          <p>安装完成后，你需要生成配置文件：</p>
-          <pre><code>npx tailwindcss init -p</code></pre>
-          <h3>引入Tailwind到项目</h3>
-          <p>在你的CSS文件中引入Tailwind的基础样式：</p>
-          <pre><code>@tailwind base;
-@tailwind components;
-@tailwind utilities;</code></pre>
-        </div>
+        <!-- 文章内容 - 支持富文本和Markdown -->
+        <div class="article-content" v-html="renderedContent"></div>
       </article>
 
       <!-- 侧边栏 -->
@@ -125,9 +104,205 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import MarkdownIt from 'markdown-it';
+import DOMPurify from 'dompurify';
+
 defineOptions({
   name: 'ArticleDetailPage',
+});
+
+// 创建Markdown实例 - 优化配置增强安全性
+const md = new MarkdownIt({
+  breaks: true,
+  linkify: true,
+  html: false, // 禁用html渲染，由DOMPurify统一处理
+  typographer: false, // 禁用自动替换，避免潜在的安全问题
+  quotes: '""\'\'', // 设置引号规则
+  xhtmlOut: true, // 输出自闭合标签，提高兼容性
+});
+
+// 文章内容类型枚举
+const ContentType = {
+  HTML: 'html',
+  MARKDOWN: 'markdown',
+};
+
+// 模拟文章数据（实际应用中应从API获取）
+// 注意：添加了包含潜在XSS攻击的测试内容，验证安全过滤是否有效
+const articleData = ref({
+  title: '如何使用Tailwind CSS构建现代响应式界面',
+  author: '张明',
+  authorAvatar: 'https://picsum.photos/id/1005/40/40',
+  date: '2023年10月15日',
+  readingTime: '8分钟阅读',
+  views: '2,345阅读',
+  comments: '42评论',
+  coverImage: 'https://picsum.photos/id/1035/800/400',
+  excerpt: 'Tailwind CSS作为一个实用优先的CSS框架，正在改变前端开发的方式。本文将深入探讨如何利用强大功能构建高效、美观的响应式界面，从基础设置到高级技巧，帮助你掌握这一现代开发工具。',
+  tag: '技术探索',
+  // 可以切换 contentType 来测试不同格式
+  contentType: ContentType.MARKDOWN,
+  // Markdown格式内容示例（包含安全测试内容）
+  markdownContent: `在当今快速发展的前端领域，开发效率和用户体验同样重要。Tailwind CSS作为一个实用优先（utility-first）的CSS框架，通过提供大量预定义的类，让开发者能够直接在HTML中构建界面，而无需编写自定义CSS。
+
+## 本文将从以下几个方面介绍Tailwind CSS的使用方法和最佳实践：
+
+1. Tailwind CSS的安装与配置
+2. 实用优先的开发理念与工作流
+3. 响应式设计实现技巧
+4. 自定义主题与扩展
+
+## Tailwind CSS的安装与配置
+
+### 安装方式
+
+你可以通过npm或yarn来安装Tailwind CSS：
+
+\`\`\`bash
+npm install -D tailwindcss postcss autoprefixer
+\`\`\`
+
+### 配置文件设置
+
+安装完成后，你需要生成配置文件：
+
+\`\`\`bash
+npx tailwindcss init -p
+\`\`\`
+
+### 引入Tailwind到项目
+
+在你的CSS文件中引入Tailwind的基础样式：
+
+\`\`\`css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+\`\`\`
+
+## 安全测试内容（潜在XSS攻击将被过滤）
+
+这是一个包含潜在XSS攻击的链接：[测试链接](javascript:alert('XSS攻击！'))
+
+这是一个包含onerror事件的图片：![测试图片](x.jpg)
+
+这是一段Markdown中的HTML标签：&lt;script&gt;alert('XSS攻击！')&lt;/script&gt;
+
+这是一个iframe：<iframe src="https://example.com"></iframe>
+
+正常的外部链接将被安全处理：[Vue官方网站](https://vuejs.org/)`,
+  // HTML格式内容示例（包含安全测试内容）
+  htmlContent: `<p>在当今快速发展的前端领域，开发效率和用户体验同样重要。Tailwind CSS作为一个实用优先（utility-first）的CSS框架，通过提供大量预定义的类，让开发者能够直接在HTML中构建界面，而无需编写自定义CSS。</p>
+<p>本文将从以下几个方面介绍Tailwind CSS的使用方法和最佳实践：</p>
+<ol>
+  <li>Tailwind CSS的安装与配置</li>
+  <li>实用优先的开发理念与工作流</li>
+  <li>响应式设计实现技巧</li>
+  <li>自定义主题与扩展</li>
+</ol>
+<h2>Tailwind CSS的安装与配置</h2>
+<h3>安装方式</h3>
+<p>你可以通过npm或yarn来安装Tailwind CSS：</p>
+<pre><code>npm install -D tailwindcss postcss autoprefixer</code></pre>
+<h3>配置文件设置</h3>
+<p>安装完成后，你需要生成配置文件：</p>
+<pre><code>npx tailwindcss init -p</code></pre>
+<h3>引入Tailwind到项目</h3>
+<p>在你的CSS文件中引入Tailwind的基础样式：</p>
+<pre><code>@tailwind base;
+@tailwind components;
+@tailwind utilities;</code></pre>
+<h2>安全测试内容（潜在XSS攻击将被过滤）</h2>
+<p>这是一个包含潜在XSS攻击的链接：<a href="javascript:alert('XSS攻击！')">测试链接</a></p>
+<p>这是一个包含onerror事件的图片：<img src="x.jpg" onerror="alert('XSS攻击！')" alt="测试图片"></p>
+<p>这是一段HTML脚本标签：&lt;script&gt;alert('XSS攻击！')&lt;/script&gt;</p>
+<p>这是一个iframe：<iframe src="https://example.com"></iframe></p>
+<p>正常的外部链接将被安全处理：<a href="https://vuejs.org/">Vue官方网站</a></p>`,
+});
+
+// 计算属性：根据内容类型返回安全渲染后的HTML内容
+const renderedContent = computed(() => {
+  let htmlContent = '';
+
+  if (articleData.value.contentType === ContentType.MARKDOWN) {
+    // 先渲染Markdown为HTML
+    htmlContent = md.render(articleData.value.markdownContent);
+  } else {
+    // 直接使用HTML内容
+    htmlContent = articleData.value.htmlContent;
+  }
+
+  // 自定义钩子函数，为链接添加安全属性
+  DOMPurify.addHook('afterSanitizeAttributes', node => {
+    // 处理图片标签，确保src不为空且安全
+    // 处理链接标签
+    if (node.nodeName === 'A') {
+      const href = node.getAttribute('href');
+      // 确保href存在且不为空
+      if (href && href.startsWith('http')) {
+        // 为所有外部链接添加noopener和noreferrer
+        node.setAttribute('rel', 'noopener noreferrer');
+        // 如果没有明确设置target，默认使用_blank
+        if (!node.hasAttribute('target')) {
+          node.setAttribute('target', '_blank');
+        }
+      }
+    }
+    // 处理图片标签，确保src不为空且安全
+    if (node.nodeName === 'IMG') {
+      const src = node.getAttribute('src');
+      if (!src || src.trim() === '') {
+        node.removeAttribute('src');
+      }
+    }
+  });
+  // 使用DOMPurify净化HTML内容，只允许安全的标签和属性
+  // 添加安全配置，确保链接安全并移除潜在危险元素
+  return DOMPurify.sanitize(htmlContent, {
+    ALLOWED_TAGS: [
+      'p',
+      'br',
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      'ul',
+      'ol',
+      'li',
+      'blockquote',
+      'pre',
+      'code',
+      'table',
+      'thead',
+      'tbody',
+      'tr',
+      'th',
+      'td',
+      'a',
+      'img',
+      'hr',
+      'strong',
+      'em',
+      'b',
+      'i',
+      'del',
+      'ins',
+      'sup',
+      'sub',
+      'span',
+    ],
+    ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'width', 'height', 'class', 'id', 'target', 'rel'],
+    FORBID_TAGS: ['script', 'iframe', 'form', 'input', 'button', 'style', 'meta', 'link'],
+    FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur', 'onchange', 'onsubmit'],
+    // 为所有外部链接添加安全属性
+    ADD_TAGS: ['link'],
+    ADD_ATTR: ['target', 'rel'],
+    FORCE_BODY: true,
+    SANITIZE_DOM: true,
+  });
 });
 </script>
 
@@ -259,15 +434,24 @@ defineOptions({
   color: #606266;
 }
 
-/* 文章内容 */
+/* 文章内容 - 支持富文本和Markdown */
 .article-content {
   font-size: 16px;
   line-height: 1.8;
   color: var(--app-body-text-color);
 }
 
+/* 基础文本样式 */
 .article-content p {
   margin-bottom: 16px;
+}
+
+/* 标题样式 */
+.article-content h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 35px 0 20px;
+  color: var(--app-body-text-color);
 }
 
 .article-content h2 {
@@ -275,6 +459,8 @@ defineOptions({
   font-weight: 600;
   margin: 30px 0 15px;
   color: var(--app-body-text-color);
+  border-bottom: 1px solid #eaecef;
+  padding-bottom: 8px;
 }
 
 .article-content h3 {
@@ -284,31 +470,150 @@ defineOptions({
   color: var(--app-body-text-color);
 }
 
+.article-content h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 20px 0 10px;
+  color: var(--app-body-text-color);
+}
+
+.article-content h5 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 18px 0 8px;
+  color: var(--app-body-text-color);
+}
+
+.article-content h6 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 15px 0 8px;
+  color: var(--app-body-text-color);
+}
+
+/* 列表样式 */
+.article-content ul,
 .article-content ol {
   margin: 0 0 16px 20px;
   padding: 0;
 }
 
-.article-content ol li {
+.article-content ul {
+  list-style-type: disc;
+}
+
+.article-content ul ul {
+  list-style-type: circle;
+  margin-bottom: 0;
+}
+
+.article-content ol {
+  list-style-type: decimal;
+}
+
+.article-content ol ol {
+  list-style-type: lower-alpha;
+  margin-bottom: 0;
+}
+
+.article-content li {
   margin-bottom: 8px;
 }
 
+.article-content li p {
+  margin-bottom: 8px;
+}
+
+/* 代码块样式 */
 .article-content pre {
   background-color: #f5f7fa;
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
   overflow-x: auto;
+  position: relative;
 }
 
 .article-content code {
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 14px;
   color: #e74c3c;
+  background-color: #f5f7fa;
+  padding: 2px 4px;
+  border-radius: 3px;
 }
 
 .article-content pre code {
   color: var(--app-body-text-color);
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* 引用样式 */
+.article-content blockquote {
+  border-left: 4px solid #409eff;
+  padding-left: 16px;
+  margin: 16px 0;
+  color: #606266;
+  background-color: #f5f7fa;
+  padding: 12px 20px;
+  border-radius: 0 8px 8px 0;
+}
+
+.article-content blockquote p {
+  margin-bottom: 0;
+}
+
+/* 表格样式 */
+.article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.article-content th,
+.article-content td {
+  padding: 8px 12px;
+  border: 1px solid #eaecef;
+  text-align: left;
+}
+
+.article-content th {
+  background-color: #f5f7fa;
+  font-weight: 600;
+}
+
+.article-content tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* 链接样式 */
+.article-content a {
+  color: #409eff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.article-content a:hover {
+  color: #66b1ff;
+  text-decoration: underline;
+}
+
+/* 图片样式 */
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  margin: 16px 0;
+  border-radius: 8px;
+}
+
+/* 水平线样式 */
+.article-content hr {
+  border: 0;
+  border-top: 1px solid #eaecef;
+  margin: 24px 0;
 }
 
 /* 侧边栏 */
