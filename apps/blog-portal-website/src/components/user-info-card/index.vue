@@ -22,6 +22,7 @@ h3 {
   margin-top: 0;
   margin-bottom: 15px;
   font-size: 18px;
+  font-weight: 600;
   color: #333;
   border-bottom: 2px solid #1890ff;
   padding-bottom: 8px;

@@ -8,52 +8,36 @@
 <template>
   <div class="layout">
     <!-- 顶部导航栏 -->
-    <LayoutHeader />
+    <LayoutHeader ref="headerRef" />
 
     <!-- 主要内容区域 -->
     <main class="main">
       <div class="container">
         <div class="content-wrapper">
-          <!-- 文章列表区域 -->
-          <ArticleList />
-
-          <!-- 侧边栏 -->
-          <aside class="sidebar">
-            <!-- 作者信息 -->
-            <UserInfoCard />
-
-            <!-- 分类列表 -->
-            <CardList :list="categoryList" title="文章分类" type="category" />
-
-            <!-- 热门标签 -->
-            <CardList :list="tagList" title="热门标签" type="tag" />
-            <!-- 热门文章 -->
-            <CardList :list="hotArticleList" title="热门文章" type="articles" />
-          </aside>
+          <RouterView />
         </div>
       </div>
     </main>
-
     <!-- 页脚 -->
     <footer class="footer">
       <div class="container">
         <div class="footer-content">
           <div class="footer-info">
-            <h3>博客门户</h3>
-            <p>分享技术，连接未来</p>
+            <h3>江厌离的博客</h3>
+            <p>探索思想，分享见解，记录生活的点滴感悟。</p>
           </div>
           <div class="footer-links">
             <h4>快速链接</h4>
-            <ul>
-              <li v-for="item in navItems" :key="item.path">
-                <a :href="item.path">{{ item.name }}</a>
+            <ul @click="onClickNavItem">
+              <li v-for="item in navItems" :key="item.path" :data-path="item.path">
+                <p :href="item.path" :data-path="item.path">{{ item.name }}</p>
               </li>
             </ul>
           </div>
           <div class="footer-contact">
             <h4>联系我们</h4>
             <p>邮箱: 954583943@qq.com</p>
-            <!-- <p>微信: 954583943</p> -->
+            <p>QQ: 954583943</p>
           </div>
         </div>
         <div class="footer-bottom">
@@ -65,58 +49,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import CardList from '@/components/card-list/index.vue';
-import UserInfoCard from './components/user-info-card.vue';
+import { ref, computed, useTemplateRef } from 'vue';
+import { useRouter } from 'vue-router';
 import LayoutHeader from './components/header.vue';
-import ArticleList from './components/article.vue';
-// import PageFooter from './components/page-footer.vue';
 import { NavItem } from '@/layout/types/layout.interface';
-
+import { navRoutes } from '@/router/routes';
 defineOptions({ name: 'LayoutIndex' });
+const router = useRouter();
+const headerRef = useTemplateRef('headerRef');
 
-const navItems = ref<NavItem[]>([
-  { name: '首页', path: '/' },
-  { name: '文章', path: '/articles' },
-  { name: '分类', path: '/categories' },
-  { name: '标签', path: '/tags' },
-  { name: '关于', path: '/about' },
-]);
-
-const categoryList = ref([
-  { name: '前端开发', key: '/categories/frontend' },
-  { name: '后端开发', key: '/categories/backend' },
-  { name: '人工智能', key: '/categories/ai' },
-  { name: '开发工具', key: '/categories/tools' },
-  { name: '其他', key: '/categories/other' },
-]);
-
-const tagList = ref([
-  { name: 'Vue', key: '/tags/vue' },
-  { name: 'React', key: '/tags/react' },
-  { name: 'TypeScript', key: '/tags/typescript' },
-  { name: 'Node.js', key: '/tags/nodejs' },
-  { name: 'Python', key: '/tags/python' },
-  { name: '算法', key: '/tags/algorithm' },
-]);
-
-const hotArticleList = ref([
-  { name: 'Vue 3 Composition API 实战教程', key: '/articles/vue-3-composition-api' },
-  { name: 'TypeScript 进阶指南', key: '/articles/typescript-advanced' },
-  { name: '前端性能优化最佳实践', key: '/articles/frontend-performance' },
-  { name: 'React Hooks 深入理解', key: '/articles/react-hooks' },
-]);
-
-// 移动端菜单控制
-const showMobileMenu = ref(false);
-const toggleMobileMenu = () => {
-  showMobileMenu.value = !showMobileMenu.value;
-};
-
+const navItems = ref<NavItem[]>(
+  navRoutes.map(item => ({
+    name: item.meta?.title as string,
+    path: item.path,
+  })),
+);
 // 获取当前年份
 const currentYear = computed(() => {
   return new Date().getFullYear();
 });
+
+// 点击导航项时跳转
+function onClickNavItem(e: Event) {
+  const target = e.target as HTMLElement;
+  const path = target.dataset.path;
+  if (path) {
+    router.push(path);
+    headerRef.value?.setCurrentPath(path);
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -227,36 +188,11 @@ const currentYear = computed(() => {
 /* 主要内容区域样式 */
 .main {
   flex: 1;
-  padding: 40px 0;
 }
 
 .content-wrapper {
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-  gap: 30px;
-}
-
-/* 侧边栏样式 */
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.sidebar > div {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.sidebar h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 18px;
-  color: #333;
-  border-bottom: 2px solid #1890ff;
-  padding-bottom: 8px;
+  padding: 40px 24px;
+  background-color: #f9fafb;
 }
 
 /* 页脚样式 */
@@ -291,10 +227,11 @@ const currentYear = computed(() => {
   padding: 0;
   li {
     margin-bottom: 8px;
-    a {
+    p {
       color: #ccc;
       text-decoration: none;
       transition: color 0.3s;
+      cursor: pointer;
       &:hover {
         color: #fff;
       }
@@ -312,15 +249,6 @@ const currentYear = computed(() => {
 
 /* 响应式设计 */
 @media (max-width: 992px) {
-  .content-wrapper {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
   .footer-content {
     grid-template-columns: 1fr 1fr;
   }
@@ -331,15 +259,9 @@ const currentYear = computed(() => {
   .search-box {
     display: none;
   }
-
   .mobile-menu-btn {
     display: block;
   }
-
-  .sidebar {
-    grid-template-columns: 1fr;
-  }
-
   .footer-content {
     grid-template-columns: 1fr;
     text-align: center;

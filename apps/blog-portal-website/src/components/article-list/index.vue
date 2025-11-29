@@ -1,6 +1,6 @@
 <template>
   <div class="article-list">
-    <div v-for="(article, index) in articles" :key="index" class="article-card">
+    <div v-for="(article, index) in articles" :key="index" class="article-card" @click="handleClick(article)">
       <!-- 有图文章布局 -->
       <div v-if="article.image" class="article-content">
         <div class="article-image">
@@ -44,6 +44,8 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
+
 defineOptions({
   name: 'ArticleList',
 });
@@ -125,6 +127,13 @@ const articles: Article[] = [
     image: '/article4.jpg',
   },
 ];
+
+// 点击文章详情路由
+const router = useRouter();
+const handleClick = (article: Article) => {
+  // 打开新的浏览器标签页
+  window.open(router.resolve({ name: 'ArticleDetailPage', params: { id: article.id } }).href, '_blank');
+};
 </script>
 
 <style scoped>
@@ -132,10 +141,6 @@ const articles: Article[] = [
   display: flex;
   flex-direction: column;
   gap: 24px;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .article-card {
@@ -146,6 +151,7 @@ const articles: Article[] = [
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
+  cursor: pointer;
 }
 
 .article-card:hover {

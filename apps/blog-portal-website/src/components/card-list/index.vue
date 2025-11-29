@@ -9,11 +9,11 @@
   <div :class="{ [`${type}-list`]: true }">
     <h3>{{ title }}</h3>
     <div v-if="type === 'tag'" class="tag">
-      <a v-for="item in list" :key="item.key" :href="item.key">{{ item.name }}</a>
+      <div v-for="item in list" :key="item.key" :href="item.key">{{ item.name }}</div>
     </div>
     <ul v-else>
       <li v-for="item in list" :key="item.key">
-        <a :href="item.key">{{ item.name }}</a>
+        <div :href="item.key">{{ item.name }}</div>
       </li>
     </ul>
   </div>
@@ -35,6 +35,7 @@ h3 {
   margin-top: 0;
   margin-bottom: 15px;
   font-size: 18px;
+  font-weight: 600;
   color: #333;
   border-bottom: 2px solid #1890ff;
   padding-bottom: 8px;
@@ -45,10 +46,11 @@ h3 {
   padding: 0;
   li {
     margin-bottom: 10px;
-    a {
+    div {
       color: #666;
       text-decoration: none;
       transition: color 0.3s;
+      cursor: pointer;
       &:hover {
         color: #1890ff;
       }
@@ -60,7 +62,7 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  a {
+  div {
     display: inline-block;
     padding: 4px 12px;
     background-color: #f0f0f0;
@@ -69,6 +71,7 @@ h3 {
     border-radius: 16px;
     font-size: 14px;
     transition: all 0.3s;
+    cursor: pointer;
     &:hover {
       background-color: #1890ff;
       color: white;

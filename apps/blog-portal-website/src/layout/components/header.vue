@@ -12,10 +12,10 @@
         <div class="logo">
           <h1>江厌离的博客</h1>
         </div>
-        <nav class="main-nav">
+        <nav class="main-nav" @click.stop="onClickNavItem">
           <ul>
-            <li v-for="item in navItems" :key="item.path">
-              <span>{{ item.name }}</span>
+            <li v-for="item in navItems" :key="item.path" :class="{ 'selected span': item.path === currentPath }">
+              <span :data-path="item.path">{{ item.name }}</span>
             </li>
           </ul>
         </nav>
@@ -23,42 +23,49 @@
           <input type="text" placeholder="搜索文章..." />
           <button type="button">搜索</button>
         </div>
-        <div class="mobile-menu-btn">
-          <button @click="toggleMobileMenu">☰</button>
-        </div>
       </div>
-    </div>
-    <!-- 移动端导航菜单 -->
-    <div v-if="showMobileMenu" class="mobile-menu">
-      <ul>
-        <li v-for="item in navItems" :key="item.path">
-          <a :href="item.path" @click="showMobileMenu = false">{{ item.name }}</a>
-        </li>
-      </ul>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { NavItem } from '@/layout/types/layout.interface';
-import { ref } from 'vue';
-
+import { navRoutes } from '@/router/routes';
 defineOptions({
   name: 'HeaderContent',
 });
+const router = useRouter();
+const route = useRoute();
+const currentPath = ref();
 
-const navItems = ref<NavItem[]>([
-  { name: '首页', path: '/' },
-  { name: '文章', path: '/articles' },
-  { name: '分类', path: '/categories' },
-  { name: '标签', path: '/tags' },
-  { name: '关于', path: '/about' },
-]);
-// 移动端菜单控制
-const showMobileMenu = ref(false);
-const toggleMobileMenu = () => {
-  showMobileMenu.value = !showMobileMenu.value;
-};
+const navItems = ref<NavItem[]>(
+  navRoutes.map(item => ({
+    name: item.meta?.title as string,
+    path: item.path,
+  })),
+);
+// 点击导航项时跳转
+function onClickNavItem(e: Event): void {
+  const target = e.target as HTMLElement;
+  const path = target.dataset.path;
+  if (path) {
+    currentPath.value = path;
+    router.push(path);
+  }
+}
+
+function setCurrentPath(path: string): void {
+  currentPath.value = path;
+}
+onMounted(() => {
+  currentPath.value = route.path;
+  console.log(route, 'currentPath');
+});
+defineExpose({
+  setCurrentPath,
+});
 </script>
 
 <style lang="scss" scoped>
@@ -103,8 +110,21 @@ const toggleMobileMenu = () => {
   text-decoration: none;
   font-size: 16px;
   transition: color 0.3s;
+  cursor: pointer;
   &:hover {
     color: #1890ff;
+  }
+}
+.selected span {
+  color: #1890ff;
+  &::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 4px;
+    background-color: #1890ff;
+    border-radius: 2px;
+    margin-top: 5px;
   }
 }
 
@@ -128,34 +148,12 @@ const toggleMobileMenu = () => {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
-
-.mobile-menu-btn {
-  display: none;
-  button {
-    font-size: 24px;
-    background: none;
-    border: none;
-    cursor: pointer;
+  transition: background-color 0.3s;
+  &:hover {
+    background-color: #40a9ff;
   }
-}
-
-.mobile-menu {
-  background-color: #fff;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  ul {
-    list-style: none;
-    padding: 0;
-    li {
-      margin-bottom: 15px;
-      a {
-        color: #666;
-        text-decoration: none;
-        font-size: 16px;
-        display: block;
-      }
-    }
+  &:active {
+    background-color: #006db3;
   }
 }
 </style>

@@ -6,6 +6,7 @@
  * @LastEditTime: 2025-10-29 17:19:16
  */
 import { createRouter, createWebHashHistory } from 'vue-router';
+import { layoutRoutes, navRoutes } from './routes';
 
 const router = createRouter({
   history: createWebHashHistory('/'),
@@ -13,7 +14,15 @@ const router = createRouter({
     {
       path: '/',
       name: 'LayoutIndex',
+      redirect: '/home',
       component: () => import('@/layout/index.vue'),
+      children: [...navRoutes, ...layoutRoutes],
+    },
+    // 404 Not Found
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFoundPage',
+      component: () => import('../pages/not-found/index.vue'),
     },
   ],
 });
