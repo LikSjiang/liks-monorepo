@@ -15,3 +15,5 @@ warpperEnv
 VITE
 NPROGRESS
 linkify
+Csvg
+Cpath
