@@ -549,7 +549,7 @@ const navigateToArticle = (id: number) => {
 /* 文章容器 */
 .articles-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 24px;
 }
 
@@ -684,7 +684,7 @@ const navigateToArticle = (id: number) => {
 /* 响应式设计 */
 @media (max-width: 1024px) {
   .articles-container {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 20px;
   }
 }

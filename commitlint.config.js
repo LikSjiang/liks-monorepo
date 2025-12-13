@@ -58,7 +58,7 @@ export default {
       footer: '请输入变更影响的关闭问题(可选):',
       confirmCommit: '确认提交变更吗?',
     },
-    scopes: ['root', 'apps', 'apps/blog-serve', 'packages'],
+    scopes: ['root', 'apps', 'apps/blog-serve', 'apps/blog-portal-website', 'packages'],
     allCustomScopes: true,
     skipQuestions: ['body', 'footer', 'breaking', 'footerPrefix'],
   },

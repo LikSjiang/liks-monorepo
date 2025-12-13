@@ -10,9 +10,9 @@ export default {
      */
     autoprefixer({
       // 声明需要支持的浏览器版本
-      overrideBrowserslist: ['Android 4.1', 'iOS 7.1', 'Chrome > 31', 'ff > 31', 'ie >= 8', 'last 10 versions'],
+      overrideBrowserslist: ['Android 4.1', 'iOS 7.1', 'Chrome > 31', 'ff > 31', 'last 10 versions'],
       // 是否应为网格布局添加 IE 10-11 的前缀
-      grid: true,
+      grid: false,
     }),
   ],
 };
