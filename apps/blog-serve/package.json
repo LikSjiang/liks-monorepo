@@ -55,6 +55,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",
+    "@types/minimatch": "^6.0.0",
     "@types/multer": "^2.0.0",
     "@types/supertest": "^6.0.2",
     "globals": "^16.0.0",
