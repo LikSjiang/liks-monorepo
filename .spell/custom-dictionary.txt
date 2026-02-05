@@ -17,3 +17,5 @@ NPROGRESS
 linkify
 Csvg
 Cpath
+tetris
+Avenir
