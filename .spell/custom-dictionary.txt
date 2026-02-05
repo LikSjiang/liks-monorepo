@@ -19,3 +19,7 @@ Csvg
 Cpath
 tetris
 Avenir
+customColorPrimarys
+sider
+localStroge
+Stylesheet
